@@ -1,0 +1,8 @@
+.vscode
+__pycache__/
+*.py[cod]
+*$py.class
+.DS_Store
+roles-dependencies.png
+roles-dependencies.png.pdf
+tests/.coverage
