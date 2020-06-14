@@ -1,0 +1,24 @@
+
+- name: Check if elasticsearch is installed
+  command: dpkg-query -W elasticsearch-2.1.1.deb
+  register: elasticsearch_package_check_deb
+  failed_when: elasticsearch_package_check_deb.rc > 1
+  changed_when: elasticsearch_package_check_deb.rc == 1
+
+- name: Download elasticsearch bin
+  get_url:
+    url: https://download.elasticsearch.org/elasticsearch/release/org/elasticsearch/distribution/deb/elasticsearch/2.1.1/elasticsearch-2.1.1.deb
+    dest: /tmp/elasticsearch-2.1.1.deb
+  when: elasticsearch_package_check_deb.rc == 1
+
+- name: Install elasticsearch
+  apt:
+    deb: "/tmp/elasticsearch-2.1.1.deb"
+  sudo: true
+  when: elasticsearch_package_check_deb.rc == 1
+
+- name: Ensure elasticsearch is started
+  service:
+    name: elasticsearch
+    state: started
+    enabled: yes

@@ -33,6 +33,19 @@ class DependencyGraphHelper:
     def __init__(self):
         self._roles = {}
         self.graph = Digraph(comment='roles', node_attr={'color': 'lightblue2', 'style': 'filled'})
+        
+    def parse_roles(self, roles_dir):
+        print("parsing roles_dir:" + roles_dir)
+
+        self._search_in_metas(roles_dir)
+        self._search_in_tasks(roles_dir, 'include_role')
+        self._search_in_tasks(roles_dir, 'import_role')
+
+        return self.graph
+
+    def render_graph(self, graph, output_file):
+        graph.attr(size='6,6')
+        graph.render(output_file, view=True)
 
     def _search_in_metas(self, roles_dir):
         for path in glob(join(roles_dir, '*/meta/main.yml')):
@@ -88,7 +101,8 @@ def main():
     config = helper.parse_args(sys.argv[1:])
 
     graph_builder = DependencyGraphHelper()
-    
+    graph = graph_builder.parse_roles(config.roles_path)
+    graph_builder.render_graph(graph, config.output)
 
 if __name__ == '__main__':
     main()

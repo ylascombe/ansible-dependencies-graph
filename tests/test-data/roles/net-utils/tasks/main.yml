@@ -1,0 +1,10 @@
+---
+
+- name: Include role for example.
+  include_role:
+    name: common
+
+- name: Install net-utils
+  apt:
+    name: net-utils
+...
